@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "ChemCal"
+  site-url: "https://Rhys-McAlister.github.io/ChemCal"
+  description: "A collection of functions that simplify the process of creating calibration curves."
+  repo-branch: main
+  repo-url: "https://github.com/Rhys-McAlister/ChemCal"
