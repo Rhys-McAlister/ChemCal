@@ -42,7 +42,9 @@ print(f"Intercept: {cal.intercept: .3f}" )
 print(f"R2: {cal.r_squared: .3f}" )
 ```
 
-    NameError: name 'sp' is not defined
+    Slope:  0.904
+    Intercept:  0.027
+    R2:  0.998
 
 Finally, we can calculate an inverse prediction from unknown data and
 retrieve the uncertainty but calling .inverse_prediction() and
@@ -58,62 +60,7 @@ $${S_{\hat{x}}}_0 = \frac{S_{y/x}}{b} \sqrt{\frac{1}{m} + \frac{1}{n}} $$
 
 ``` python
 pred = cal.inverse_prediction(sample_data['unknown'])
-# print(f"Predicted concentration: {pred: .3f} +- {cal.calculate_uncertainty(): .3f}")
+print(pred)
 ```
 
-    Unexpected exception formatting exception. Falling back to standard exception
-
-    Traceback (most recent call last):
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/interactiveshell.py", line 3505, in run_code
-        exec(code_obj, self.user_global_ns, self.user_ns)
-      File "/tmp/ipykernel_2063/1656670649.py", line 1, in <module>
-        pred = cal.inverse_prediction(sample_data['unknown'])
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/projects/ChemCal/ChemCal/core.py", line 64, in inverse_prediction
-    NameError: name 'np' is not defined
-
-    During handling of the above exception, another exception occurred:
-
-    Traceback (most recent call last):
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/interactiveshell.py", line 2102, in showtraceback
-        stb = self.InteractiveTB.structured_traceback(
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 1310, in structured_traceback
-        return FormattedTB.structured_traceback(
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 1199, in structured_traceback
-        return VerboseTB.structured_traceback(
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 1052, in structured_traceback
-        formatted_exception = self.format_exception_as_a_whole(etype, evalue, etb, number_of_lines_of_context,
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 978, in format_exception_as_a_whole
-        frames.append(self.format_record(record))
-                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 878, in format_record
-        frame_info.lines, Colors, self.has_colors, lvals
-        ^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 712, in lines
-        return self._sd.lines
-               ^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/utils.py", line 145, in cached_property_wrapper
-        value = obj.__dict__[self.func.__name__] = self.func(obj)
-                                                   ^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/core.py", line 698, in lines
-        pieces = self.included_pieces
-                 ^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/utils.py", line 145, in cached_property_wrapper
-        value = obj.__dict__[self.func.__name__] = self.func(obj)
-                                                   ^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/core.py", line 649, in included_pieces
-        pos = scope_pieces.index(self.executing_piece)
-                                 ^^^^^^^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/utils.py", line 145, in cached_property_wrapper
-        value = obj.__dict__[self.func.__name__] = self.func(obj)
-                                                   ^^^^^^^^^^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/core.py", line 628, in executing_piece
-        return only(
-               ^^^^^
-      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/executing/executing.py", line 164, in only
-        raise NotOneValueFound('Expected one value, found 0')
-    executing.executing.NotOneValueFound: Expected one value, found 0
+    0.5020733029033536 ± 0.031053583676141718
