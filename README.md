@@ -13,10 +13,107 @@ pip install ChemCal
 
 ## How to use
 
-Fill me in please! Don’t forget code examples:
+First we generate some data to work with.
 
 ``` python
-1+1
+# generate training data and sample data
+test_data = pd.DataFrame({'concentration': [0.2, 0.05, 0.1, 0.8, 0.6, 0.4], "abs": [0.221, 0.057, 0.119, 0.73, 0.599, 0.383]})
+sample_data = pd.DataFrame({'unknown': [0.490, 0.471, 0.484, 0.473, 0.479, 0.492]})
 ```
 
-    2
+Now, we create a CalibrationModel object and pass the predictor and
+response variables from our dataset as the x and y values respectively.
+Additionally we specific the amount of replicates for our unknown.
+
+``` python
+cal = CalibrationModel(x=test_data['concentration'], y=test_data['abs'], test_replicates=6)
+```
+
+When we call .fit_ols(), a least squares regression is fit to the data
+and the slope, intercept and values are stored in the object and can be
+retrieved by calling object.slope, object.intercept and object.r_squared
+respectively.
+
+``` python
+cal.fit_ols()
+
+# print(f"Slope: {cal.slope: .3f}" )
+# print(f"Intercept: {cal.intercept: .3f}" )
+# print(f"R2: {cal.r_squared: .3f}" )
+```
+
+    NameError: name 'sp' is not defined
+
+Finally, we can calculate an inverse prediction from unknown data and
+retrieve the uncertainty but calling .inverse_prediction() and
+.calculate_uncertainty() respectively.
+
+The uncertainty is calculated according to the following expression:
+
+$$ U = {S_{\\hat{x}}}_0 * T $$
+
+Where:
+
+$${S_{\hat{x}}}_0 = \frac{S_{y/x}}{b} \sqrt{\frac{1}{m} + \frac{1}{n}} $$
+
+``` python
+# pred = cal.inverse_prediction(sample_data['unknown'])
+# print(f"Predicted concentration: {pred: .3f} +- {cal.calculate_uncertainty(): .3f}")
+```
+
+    Unexpected exception formatting exception. Falling back to standard exception
+
+    Traceback (most recent call last):
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/interactiveshell.py", line 3505, in run_code
+        exec(code_obj, self.user_global_ns, self.user_ns)
+      File "/tmp/ipykernel_2063/1656670649.py", line 1, in <module>
+        pred = cal.inverse_prediction(sample_data['unknown'])
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/projects/ChemCal/ChemCal/core.py", line 64, in inverse_prediction
+    NameError: name 'np' is not defined
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/interactiveshell.py", line 2102, in showtraceback
+        stb = self.InteractiveTB.structured_traceback(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 1310, in structured_traceback
+        return FormattedTB.structured_traceback(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 1199, in structured_traceback
+        return VerboseTB.structured_traceback(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 1052, in structured_traceback
+        formatted_exception = self.format_exception_as_a_whole(etype, evalue, etb, number_of_lines_of_context,
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 978, in format_exception_as_a_whole
+        frames.append(self.format_record(record))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 878, in format_record
+        frame_info.lines, Colors, self.has_colors, lvals
+        ^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/IPython/core/ultratb.py", line 712, in lines
+        return self._sd.lines
+               ^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/utils.py", line 145, in cached_property_wrapper
+        value = obj.__dict__[self.func.__name__] = self.func(obj)
+                                                   ^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/core.py", line 698, in lines
+        pieces = self.included_pieces
+                 ^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/utils.py", line 145, in cached_property_wrapper
+        value = obj.__dict__[self.func.__name__] = self.func(obj)
+                                                   ^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/core.py", line 649, in included_pieces
+        pos = scope_pieces.index(self.executing_piece)
+                                 ^^^^^^^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/utils.py", line 145, in cached_property_wrapper
+        value = obj.__dict__[self.func.__name__] = self.func(obj)
+                                                   ^^^^^^^^^^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/stack_data/core.py", line 628, in executing_piece
+        return only(
+               ^^^^^
+      File "/home/rhysmcalister/miniconda3/envs/loll/lib/python3.11/site-packages/executing/executing.py", line 164, in only
+        raise NotOneValueFound('Expected one value, found 0')
+    executing.executing.NotOneValueFound: Expected one value, found 0
