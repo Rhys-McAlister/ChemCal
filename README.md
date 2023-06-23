@@ -26,7 +26,7 @@ response variables from our dataset as the x and y values respectively.
 Additionally we specific the amount of replicates for our unknown.
 
 ``` python
-cal = CalibrationModel(x=test_data['concentration'], y=test_data['abs'], test_replicates=6)
+cal = CalibrationModel(x=test_data['concentration'], y=test_data['abs'])
 ```
 
 When we call .fit_ols(), a least squares regression is fit to the data
@@ -37,9 +37,9 @@ respectively.
 ``` python
 cal.fit_ols()
 
-# print(f"Slope: {cal.slope: .3f}" )
-# print(f"Intercept: {cal.intercept: .3f}" )
-# print(f"R2: {cal.r_squared: .3f}" )
+print(f"Slope: {cal.slope: .3f}" )
+print(f"Intercept: {cal.intercept: .3f}" )
+print(f"R2: {cal.r_squared: .3f}" )
 ```
 
     NameError: name 'sp' is not defined
@@ -57,7 +57,7 @@ Where:
 $${S_{\hat{x}}}_0 = \frac{S_{y/x}}{b} \sqrt{\frac{1}{m} + \frac{1}{n}} $$
 
 ``` python
-# pred = cal.inverse_prediction(sample_data['unknown'])
+pred = cal.inverse_prediction(sample_data['unknown'])
 # print(f"Predicted concentration: {pred: .3f} +- {cal.calculate_uncertainty(): .3f}")
 ```
 

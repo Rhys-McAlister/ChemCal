@@ -15,7 +15,7 @@ import typing
 # %% ../nbs/00_core.ipynb 6
 class CalibrationModel:
 
-    def __init__(self, x, y, test_replicates):
+    def __init__(self, x, y):
       
         self.x = x
         self.y = y
@@ -23,7 +23,7 @@ class CalibrationModel:
         self.intercept = None
         self.r_squared = None
         self.std_err = None
-        self.test_replicates = test_replicates
+        self.test_replicates = None
         self.cal_line_points = self.x.shape[0]
         self.df_resid = self.cal_line_points - 2
         self.sr = None
@@ -63,8 +63,9 @@ class CalibrationModel:
         return (self.calculate_syx() / self.slope) * np.sqrt( 1/ self.test_replicates + 1 / self.cal_line_points) 
     
     def fit_model(self):
+        # self.test_replicates = test_replicates
         self.fit_ols()
-        self.calculate_uncertainty()
+        # self.calculate_uncertainty()
         self.tabulate_results()
 
     def inverse_prediction(self, unknown):
@@ -89,5 +90,17 @@ class CalibrationModel:
         print(f"R2 = {self.r_squared}")
         print(f"Slope = {self.slope}")
         print(f"Intercept = {self.intercept}")
-        print(f"Uncertainity = {self.calculate_uncertainty()}")
+        # print(f"Uncertainity = {self.calculate_uncertainty()}")
         # print(f"Prediction = {self.inverse_prediction()}")
+
+
+    def calplot(self, xlab, ylab):
+        fig, ax = plt.subplots()
+        sns.regplot(x=self.x, y=self.y, ci=95)
+        ax.set_title("Calibration curve")
+        ax.set_xlabel(xlab)
+        ax.set_ylabel(ylab)
+        ax.annotate(f"y = {self.slope: 3f}x + {self.intercept: 3f}", xy=(0.1, 0.9), xycoords="axes fraction")
+        ax.annotate(f"R-squared = {self.r_squared: 3f}", xy=(0.1, 0.8), xycoords="axes fraction")
+        
+        plt.show()
