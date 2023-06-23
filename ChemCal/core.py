@@ -17,6 +17,9 @@ class CalibrationModel:
         self.test_replicates = test_replicates
         self.cal_line_points = self.x.shape[0]
         self.df_resid = self.cal_line_points - 2
+        self.sr = None
+        self.mean_replicate_observations = None
+        self.average_response_cal_line = None
 
     def fit_ols(self):
 
@@ -26,15 +29,6 @@ class CalibrationModel:
         
         self.fitted_values = self.slope * self.x + self.intercept
 
-   
-    def inverse_prediction(self, unknown):
-
-        if len(unknown) > 1:
-            y = np.mean(unknown)
-        else:
-            y = unknown[0]
-       
-        return (y - self.intercept)/self.slope
     
     def calculate_sse(self):
         self.calculate_fitted_values()
@@ -49,6 +43,13 @@ class CalibrationModel:
     def calculate_uncertainty(self):
         return self.calculate_sxhat() * self.get_t_value(0.05)
     
+
+    
+    def calculate_hibbert_uncertainty(self, sr, test_repeats, y0, average_response_cal_line, sumsquares):
+        return (1/self.slope) * np.sqrt(((sr**2)/test_repeats) + ((self.calculate_syx()**2)/self.cal_line_points) + 
+                                                                   (((self.calculate_syx()**2)*((y0-average_response_cal_line)**2))/((self.slope**2)*(sumsquares))))
+
+    
     def calculate_sxhat(self):
         return (self.calculate_syx() / self.slope) * np.sqrt( 1/ self.test_replicates + 1 / self.cal_line_points) 
     
@@ -56,6 +57,23 @@ class CalibrationModel:
         self.fit_ols()
         self.calculate_uncertainty()
         self.tabulate_results()
+
+    def inverse_prediction(self, unknown):
+
+        if len(unknown) > 1:
+            y0 = np.mean(unknown)
+            sr = np.std(unknown)
+            test_repeats = len(unknown)
+            average_response_cal_line = np.mean(self.y)
+            sumsquares = np.sum((self.x - self.x.mean())**2)
+
+            pred =  (y0 - self.intercept)/self.slope
+        
+            return f"{pred} ± {self.calculate_hibbert_uncertainty(sr=sr, y0=y0, test_repeats=test_repeats, average_response_cal_line=average_response_cal_line, sumsquares=sumsquares) * self.get_t_value(0.05)}"
+        else:
+            y = unknown[0]
+            pred = (y - self.intercept)/self.slope
+            return f"{pred} ± {self.calculate_uncertainty()}"
 
     def tabulate_results(self):
         print(f"Calibration curve")
