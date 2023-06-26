@@ -25,5 +25,6 @@ d = { 'settings': { 'branch': 'main',
                               'ChemCal.core.CalibrationModel.get_t_value': ('core.html#calibrationmodel.get_t_value', 'ChemCal/core.py'),
                               'ChemCal.core.CalibrationModel.inverse_prediction': ( 'core.html#calibrationmodel.inverse_prediction',
                                                                                     'ChemCal/core.py'),
+                              'ChemCal.core.CalibrationModel.linest_stats': ('core.html#calibrationmodel.linest_stats', 'ChemCal/core.py'),
                               'ChemCal.core.CalibrationModel.tabulate_results': ( 'core.html#calibrationmodel.tabulate_results',
                                                                                   'ChemCal/core.py')}}}
