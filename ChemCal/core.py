@@ -61,6 +61,9 @@ class CalibrationModel:
         self.average_response_cal_line = None
         self.fitted_values = None
 
+    def __repr__(self) -> str:
+        return f"Calibration Model"
+
     def fit_ols(self):
         self.slope, self.intercept, self.r_squared, self.std_err, _ = sp.stats.linregress(self.x, self.y)
     
