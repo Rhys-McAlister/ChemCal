@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "core.html",
+    "href": "core.html",
+    "title": "core",
+    "section": "",
+    "text": "Create an instance of the class CalibrationModel by passing in the path to both your calibration data and your sample data. Next specify the name of your response variable and the nummber of test replicates you measured.\nsource"
+  },
+  {
+    "objectID": "core.html#tests",
+    "href": "core.html#tests",
+    "title": "core",
+    "section": "Tests",
+    "text": "Tests\n\ndef generate_test_data(slope, intercept):\n        x = np.linspace(1, 10, num=5)\n        y = intercept + x * slope\n        df = pd.DataFrame({'concentration': x, \"abs\": y})\n        return df\ndef generate_sample_data():\n    x = np.array(['unknown1', 'unknown2'])\n    y = np.array([13.75, 20.50])\n    df = pd.DataFrame({'sample': x, \"abs\": y})\n    df = df.set_index('sample')\n    return df\n\n\n# test_data = generate_test_data(3, 4)\n# sample_data = generate_sample_data()\n\ntest_data = pd.DataFrame({'concentration': [0.2, 0.05, 0.1, 0.8, 0.6, 0.4], \"abs\": [0.221, 0.057, 0.119, 0.73, 0.599, 0.383]})\nsample_data = pd.DataFrame({'unknown': [0.490, 0.471, 0.484, 0.473, 0.479, 0.492]})\n\nCreate a calibration model object by passing in the predictor and response data for your calibration curve.\n\ncal = CalibrationModel(x=test_data['concentration'], y=test_data['abs'])\n\nCall the fit_model method and the parameters of the fit will be printed to the screen.\n\ncal.fit_model()\n\nCalibration curve\nR2 = 0.9976282521058687\nSlope = 0.9044109330819979\nIntercept = 0.027419415645617395\n\n\nThe individual parameters can be accessed by selecting the parameter name with dot notation. For example, to access the slope of the calibration curve, use the following code:\ncal.slope\n\nprint(f\"Slope: {cal.slope}\")\n\nSlope: 0.9044109330819979\n\n\nCalling the method .linest_stats() will produce a pandas dataframe of the same statistical output you might expect when performing a linest analysis using excel or sheets.\n\ncal.linest_stats()\n\n\n\n\n\n\n\n\nSlope\nIntercept\nUncertainty in slope\nUncertainty in intercept\nStandard error of regression\nF-statistic\nDegrees of freedom\nRegression sum of squares\nResidual sum of squares\n\n\n\n\n0\n0.904411\n0.027419\n0.0312\n0.017178\n0.020745\n840.261133\n4\n0.361606\n0.001721\n\n\n\n\n\n\n\nInverse predictions can be called via the .inverse_prediction method. Call the method and pass a list of values you would like to predict. Note, even if you only have a single sample still pass the sample in a list.\n\ncal.inverse_prediction(sample_data['unknown'])\n\n'0.5020733029033536 ± 0.031053583676141718'\n\n\nThe .calplot method will plot the calibration curve.\n\ncal.calplot(xlab='predictor', ylab='response')"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ChemCal",
+    "section": "",
+    "text": "pip install ChemCal"
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "ChemCal",
+    "section": "",
+    "text": "pip install ChemCal"
+  },
+  {
+    "objectID": "index.html#how-to-use",
+    "href": "index.html#how-to-use",
+    "title": "ChemCal",
+    "section": "How to use",
+    "text": "How to use\nFirst we generate some data to work with.\n\n# generate training data and sample data\ntest_data = pd.DataFrame({'concentration': [0.2, 0.05, 0.1, 0.8, 0.6, 0.4], \"abs\": [0.221, 0.057, 0.119, 0.73, 0.599, 0.383]})\nsample_data = pd.DataFrame({'unknown': [0.490, 0.471, 0.484, 0.473, 0.479, 0.492]})\n\nNow, create a CalibrationModel object and pass the predictor and response variables from our dataset as the x and y values respectively.\n\ncal = CalibrationModel(x=test_data['concentration'], y=test_data['abs'])\n\nWhen we call .fit_ols(), an ordinary least squares regression is fit to the data and the slope, intercept and values are stored in the object and can be retrieved by calling .slope, .intercept and .r_squared respectively.\n\ncal.fit_ols()\n\nprint(f\"Slope: {cal.slope: .3f}\" )\nprint(f\"Intercept: {cal.intercept: .3f}\" )\nprint(f\"R2: {cal.r_squared: .3f}\" )\n\nSlope:  0.904\nIntercept:  0.027\nR2:  0.998\n\n\nWe can also call the method .linest_stats() to return a series of statistics you might expect when using the linest function in excel or sheets.\n\ncal.linest_stats()\n\n\n\n\n\n\n\n\nSlope\nIntercept\nUncertainty in slope\nUncertainty in intercept\nStandard error of regression\nF-statistic\nDegrees of freedom\nRegression sum of squares\nResidual sum of squares\n\n\n\n\n0\n0.904411\n0.027419\n0.0312\n0.017178\n0.020745\n840.261133\n4\n0.361606\n0.001721\n\n\n\n\n\n\n\nFinally, we can calculate an inverse prediction from unknown data and retrieve the uncertainty but calling .inverse_prediction().\n\npred = cal.inverse_prediction(sample_data['unknown'])\nprint(pred)\n\n0.5020733029033536 ± 0.031053583676141718\n\n\nThe uncertainty is calculated according to the following expression:\n\\[ U = {S_{\\\\hat{x}}}_0 * T \\]\nWhere if a single sample is provided:\n\\[ {S_{\\hat{x}}}_0 = \\frac{S_{y/x}}{b} \\sqrt{\\frac{1}{m} + \\frac{1}{n}} \\]\nOr, if multiple replicate samples are provided:\n\\[ s_{\\hat{x}_0}=\\frac{1}{b} \\sqrt{\\frac{s_r^2}{m}+\\frac{s_{y / x}^2}{n}+\\frac{s_{y / x}^2\\left(y_0-\\bar{y}\\right)^2}{b^2 \\sum_{i=1}^n\\left(x_i-\\bar{x}\\right)^2}} \\]"
+  }
+]
